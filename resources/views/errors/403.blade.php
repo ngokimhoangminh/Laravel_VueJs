@@ -1,1 +1,0 @@
-<h2>Bạn không thể truy cập</h2>
