@@ -1,0 +1,36 @@
+// Fonts
+@import url('https://fonts.googleapis.com/css?family=Nunito');
+@import url('https://maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css');
+// Variables
+@import 'variables';
+
+.navbar.fixed-top + .page-body-wrapper{
+    padding-left:0px;
+}
+a.nav-link.active
+{
+    color: cornflowerblue!important;
+    font-weight: bold;
+} 
+.invalid-feedback{
+    display:inline-block!important;
+}
+._vue-flash-msg-body._vue-flash-msg-body_success{
+    z-index:3;
+    margin-top:67px;
+}
+._vue-flash-msg-body._vue-flash-msg-body_error{
+    margin-top:67px;
+}
+._vue-flash-msg-body__text{
+    color: #fff;
+    font-family: cursive;
+}
+.table-image{
+    width: 56px!important;
+    height: 50px!important;
+}
+a{
+    
+}
+
