@@ -24,11 +24,6 @@ class AuthServiceProvider extends ServiceProvider
     public function boot()
     {
         $this->registerPolicies();
-
-        Passport::tokensCan([
-            'adminstrator' => 'Adminstrator token scope',
-            'user' => 'User token scope',
-        ]);
         
     }
 }

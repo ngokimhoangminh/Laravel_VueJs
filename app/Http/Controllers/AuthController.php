@@ -3,12 +3,14 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
 use App\User;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Mail;
 use phpDocumentor\Reflection\Types\Boolean;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Auth;
+use JWTAuth;
+use JWTAuthException;
 
 class AuthController extends Controller
 {
@@ -22,8 +24,8 @@ class AuthController extends Controller
     public function register(Request $request)
     {
         $request->validate([
-            'name'=>'required|string|max:255',
-            'email'=>'required|string|email',
+            'name'=>'required|unique:users|string|max:255',
+            'email'=>'required|unique:users|string|email',
             'password'=>'required|string|confirmed'
         ]);
 
@@ -46,62 +48,70 @@ class AuthController extends Controller
             ],500);
         }
     }
+
+    public function loginRequest()
+    {
+        $pattern = [
+            'email'=>'required|string|email',
+            'password'=>'required|string',
+        ];
+        return $pattern;
+    }
+
+    public function loginRequestMessage()
+    {
+        $messenger = [
+            'email.required' => 'Email không được để trống',
+            'email.email'=> 'Email không đúng định dạng',
+            'password.required' => 'Password không được để trống'
+        ];
+        return $messenger;
+    }
+
     public function login(Request $request)
     {
 
-        $credentials=$request->validate([
-            'email'=>'required|string|email',
-            'password'=>'required|string',
-    	],[
-    		'email.required' => 'Email không được để trống',
-    		'email.email'=> 'Email không đúng định dạng',
-    		'password.required' => 'Password không đúng định dạng'
-    	]);
-        if(!Auth::attempt($credentials))
-        {
-            return response()->json([
-                'message'=>'Invalid user/password',
-                'status_code'=>401
-            ],401);
+        $credentials=$request->validate($this->loginRequest(),$this->loginRequestMessage());
+
+        $token = null;
+        try {
+           if (!$token = JWTAuth::attempt($credentials)) {
+                return response()->json([
+                        'message'=>'Invalid user/password',
+                        'status_code'=>401
+                ],401);
+           }
+        } catch (JWTAuthException $e) {
+            return response()->json(['failed_to_create_token'], 500);
         }
-        $authenticated_user =Auth::user();
-        $user = User::find($authenticated_user->id);
+
+        return $this->respondWithToken(compact('token'));
+
+    }
+
+    public function refresh()
+    {
+        return $this->respondWithToken(auth()->refresh());
+    }
+
+    protected function respondWithToken($token)
+    {
+        $user =Auth::user();
         return response()->json([
             'user'=>$user,
-            'access_token'=>$user->createToken($request->email),
+            'access_token'=>$token,
             'token_type'=>'Bearer',
             'role'=>$user->role,
-            //'token_scope'=>$tokenData->token->scopes[0],
-            //'expires_at'=>Carbon::parse($tokenData->token->expires_at)->toDateTimeString(),
+            //'expires_in' => auth()->factory()->getTTL() * 60,
             'status_code'=>200
-        ],200);
-        // if($user->role="adminstrator")
-        // {
-        //     $tokenData = $user->createToken('Personal Access Tokens', ['adminstrator']);
-        // }else
-        // {
-        //     $tokenData = $user->createToken('Personal Access Tokens', ['manager']);
-        // }
-        //$token=$tokenData->token;
-        // if($request->remember_me)
-        // {
-        //     $token->expires_at=Carbon::now()->addWeeks(1);
-        // }
-        // if($token->save())
-        // {
-           
-        // }else
-        // {
-        //     return response()->json([
-        //         'message'=>'Some error occured, plese try again',
-        //         'status_code'=>500
-        //     ],500);
-        // }
+        ]);
     }
+    
     public function logout(Request $request)
     {
-        $request->user()->token()->revoke();
+        //$request->user()->token()->revoke();
         //$request->user()->currentAccessToken()->delete();
+        JWTAuth::invalidate(JWTAuth::parseToken());
         return response()->json([
             'message'=>'Logout succesfully!!',
             'status_code'=>200
@@ -109,6 +119,8 @@ class AuthController extends Controller
     }
     public function profile(Request $request)
     {
+        //dd(JWTAuth::parseToken()->authenticate());
+        //dd(JWTAuth::toUser(JWTAuth::parseToken()));
        if($request->user())
        {
            return response()->json($request->user(),200);

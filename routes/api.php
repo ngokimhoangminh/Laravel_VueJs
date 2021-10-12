@@ -30,9 +30,11 @@ Route::group(['middleware' => 'api'], function () {
     // Route::group(['middleware' => 'is_admin'], function () {
         
     // });
+    
     Route::group(['prefix' => 'category'], function () {
         Route::resource('categories','CategoryController');
     });
+
     Route::resource('customers','CustomerController');
     
     
