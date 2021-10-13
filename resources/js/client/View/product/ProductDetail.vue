@@ -179,7 +179,7 @@
 </template>
 
 <script>
-import * as productService from '../../services/product_service';
+import * as homeService from '../../services/home_service';
 export default {
     data()
     {
@@ -199,7 +199,7 @@ export default {
         async detailProduct()
         {
             try{
-                const response=await productService.ProductDetail(this.$route.params.id);
+                const response=await homeService.ProductDetail(this.$route.params.id);
                 this.products=response.data;
             }catch(error)
             {

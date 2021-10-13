@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Product;
 
 class HomeController extends Controller
 {
@@ -13,7 +14,7 @@ class HomeController extends Controller
      */
     public function __construct()
     {
-        $this->middleware('auth');
+        //$this->middleware('auth');
     }
 
     /**
@@ -24,5 +25,14 @@ class HomeController extends Controller
     public function index()
     {
         return view('home');
+    }
+    public function getProducts()
+    {
+
+        $product=Product::where('product_status',1)->orderBy('id','desc')->paginate(8);
+        return response()
+        ->json([
+            'data' => $product
+        ]);
     }
 }
