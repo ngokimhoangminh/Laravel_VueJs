@@ -26,12 +26,6 @@ import {http,httpFile} from './http_service';
  {
      return http().post('/product/unactive',id);
  }
-// export function unactive(id)
-// {
-//     return http().put(`/product/unactive/${id}`,{
-//         product_status:0
-//     });
-// }
  export function active(id)
  {
      return http().post('/product/active',id);
