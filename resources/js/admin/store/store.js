@@ -2,8 +2,10 @@ import Vue from 'vue';
 import Vuex from 'vuex';
 import * as auth from '../services/auth_service';
 import category from './modules/category';
-import category_blog from './modules/category_blog';
+import brand from './modules/brand';
+import product from './modules/product';
 Vue.use(Vuex);
+
  export default new Vuex.Store({
     state:{
         isLoggedIn:null,
@@ -32,6 +34,7 @@ Vue.use(Vuex);
     },
     modules: {
         category,
-        category_blog
+        brand,
+        product
     }
  });

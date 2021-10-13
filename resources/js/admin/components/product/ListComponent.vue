@@ -28,7 +28,7 @@
                             :default-value="filters.category_id" 
                             @change="handleChange">
                             <el-option value="0" label="Tất cả"></el-option>
-                            <el-option :label="category.name" v-for="(category, index) in categories"  :value="category.id" :key="index"></el-option>
+                            <el-option :label="category.name" v-for="(category, index) in categorys"  :value="category.id" :key="index"></el-option>
                         </el-select>
                     </div>
                     <div class="filter_item mr-3">
@@ -43,7 +43,6 @@
                             <el-option :label="brand.name" v-for="(brand, index) in brands"  :value="brand.id" :key="index"></el-option>
                         </el-select>
                     </div>
-                    <button class="btn btn-primary btn-sm ml-4" @click="showfilter">F</button>
                 </div>
             </div>
              <el-table
@@ -51,7 +50,7 @@
                 element-loading-text="Loading..."
                 element-loading-spinner="el-icon-loading"
                 element-loading-background="rgba(0, 0, 0, 0.8)"
-                :data="productData.filter(data => !search || data.name.toLowerCase().includes(search.toLowerCase()))"
+                :data="product.filter(data => !search || data.name.toLowerCase().includes(search.toLowerCase()))"
                 style="width: 100%">
                 <el-table-column
                 fixed
@@ -166,20 +165,21 @@
     </div>
 </template>
 <script>
-import { mapActions, mapGetters } from "vuex";
+import { mapActions, mapGetters,mapMutations } from "vuex";
+import { Message } from 'element-ui';
 import * as productService from '../../services/product_service';
 import {pagination} from "../../helpers/pagination";
 import {apiRequest} from "../../helpers/apiRequest"
 import {buildUrl} from "../../helpers/buildUrl";
+
 export default {
     data()
     {
         return {
+            productId:'',
             productData: [],
             productData_Clone: [],
             productData_Total: [],
-            categories:[],
-            brands:[],
             search: '',
             loading: true,
             numberWithDots:[],
@@ -188,6 +188,7 @@ export default {
                 category_id:'0',
                 brand_id:'0'
             },
+            total:'',
             params: {
                 page: 1,
                 per_page: 5
@@ -201,79 +202,68 @@ export default {
     mounted()
     {
         this.loadProduct();
-        this.loadCategory();
         this.getCategory();
-        this.loadBrand();
+        this.getBrand();
     },
     computed: {
-        ...mapGetters(["categorys"])
+        ...mapGetters(["categorys","brands","product"])
     },
     methods:{
-        ...mapActions(["getCategory"]),
-        loadProduct:async function()
+        ...mapActions(["getCategory","getBrand","getProduct","deleteProduct","unActiveProduct","activeProduct"]),
+        ...mapMutations(['FILTER_PRODUCT']),
+        async loadProduct()
         {
+            try{
+               this.getProduct();
+               console.log("cats",this.categorys);
+            }catch(error)
+            {
+                this.flashMessage.error({
+                    message: 'Some error occurred, Please refresh!',
+                    time:4000
+                });
+            }finally
+            {
+               this.loading=false;
+            }
             // try{
             //     const response=await productService.loadeProduct();
-            //     this.productData=response.data.data;
-            //     console.log(this.productData);
+            //     this.productData=response.data.data_total;
+            //     this.total=this.productData.length;
+            //     console.log('aa',this.productData);
             // }catch(error)
             // {
             //      this.flashMessage.error({
             //             message: 'Some error occurred, Please refresh!',
             //             time:4000
             //             });
+            // }finally{
+            //     this.loading=false;
             // }
-             apiRequest('/api/product/products' + buildUrl(this.params))
-                    .then(res => {
-                        let m=res.data;
-                        this.productData=res.data.data;
-                        this.productData_Clone=res.data.data;
-                        this.productData_Total=res.data_total;
-                        this.numberWithDots=pagination(m.current_page,m.last_page);
-                    })
-                    .catch(err => {
-                        console.log(err);
-                        this.flashMessage.error({
-                                message: 'Some error occurred, Please refresh!',
-                                time:4000
-                            });
-                        })
-                    .finally(()=>{
-                        this.loading=false;
-                    })
-        },
-        loadCategory:async function()
-        {
-                try{
-                    const response=await productService.loadeCategories();
-                    this.categories=response.data;
-                }catch(error)
-                {
-                    this.flashMessage.error({
-                            message: 'Some error occurred, Please refresh!',
-                            time:40000
-                            });
-                }
-                
-        },
-        loadBrand:async function()
-        {
-                try{
-                    const response=await productService.loadBrands();
-                    this.brands=response.data;
-                }catch(error)
-                {
-                    this.flashMessage.error({
-                            message: 'Some error occurred, Please refresh!',
-                            time:40000
-                            });
-                }
-                
+            //  apiRequest('/api/product/products' + buildUrl(this.params))
+            //         .then(res => {
+            //             let m=res.data;
+            //             console.log(m);
+            //             this.productData=res.data.data;
+            //             this.productData_Clone=res.data.data;
+            //             this.productData_Total=res.data_total;
+            //             this.numberWithDots=pagination(m.current_page,m.last_page);
+            //         })
+            //         .catch(err => {
+            //             console.log(err);
+            //             this.flashMessage.error({
+            //                     message: 'Some error occurred, Please refresh!',
+            //                     time:4000
+            //                 });
+            //             })
+            //         .finally(()=>{
+            //             this.loading=false;
+            //         })
         },
         handleEdit(index, row) {
             console.log(row.name);
         },
-        handleDelete:async function(row) {
+        async handleDelete(row) {
             console.log( row);
            if(!window.confirm(`Are you sure want to delete ${row.name}`))
             {
@@ -281,11 +271,10 @@ export default {
             }
             try{
                 const response= await productService.deleteProduct(row.id);
-                
-
+                this.deleteProduct(row.id);
                 this.flashMessage.success({
-                message: 'Xóa sản phẩm thành công!',
-                time:4000
+                    message:response.data.message,
+                    time:4000
                 });
                 this.loadProduct();
             }catch(error)
@@ -296,83 +285,47 @@ export default {
                 });
             }
         },
-        unactive:async function(id) {
-            console.log(id);
+        async unactive (id) {
             try{
                 let formData=new FormData();
                 formData.append('product_id',id);
-                await productService.unactive(formData);
+                const response = await productService.unactive(formData);
+                this.unActiveProduct(id);
                 this.flashMessage.success({
-                message: 'Đã chuyển sang trạng thái ẩn thành công!',
-                time:4000
+                    message: response.data.message,
+                    time:4000
                 });
-                this.loadProduct();
             }catch(error)
             {
                 this.flashMessage.error({
-                message: error.response.data.message,
-                time:4000
+                    message: error.response.data.message,
+                    time:4000
                 });
             }
         },
-        active:async function(id) {
+        async active(id) {
             try{
                 let formData=new FormData();
                 formData.append('product_id',id);
-                await productService.active(formData);
-                
-
+                const response=await productService.active(formData);
+                this.activeProduct(id);
                 this.flashMessage.success({
-                message: 'Đã chuyển sang trạng thái hiển thị thành công!',
-                time:4000
+                    message: response.data.message,
+                    time:4000
                 });
-                this.loadProduct();
             }catch(error)
             {
                 this.flashMessage.error({
                 message: error.response.data.message,
                 time:4000
                 });
-            }
-        },
-        showfilter:async function()
-        {
-            this.loading=true;
-            try{
-               const response= await productService.filterProduct(this.filters);
-               this.productData=response.data;
-            }catch(error)
-            {
-                switch(error.response.status)
-                    { 
-                        default:
-                            this.flashMessage.error({
-                            message: 'Some error occurred, Please try agian!',
-                            time:4000
-                            });
-                            break;
-                    }
-            }finally{
-                this.loading=false;
             }
         },
         handleChange(){
-            if(this.filters.category_id==0 && this.filters.brand_id==0)
-            {
-                this.productData=this.productData_Clone
-            }
-            else if(this.filters.category_id!=0 && this.filters.brand_id==0)
-            {
-                this.productData=this.productData_Total.filter(item=>item.category_id==this.filters.category_id);
-            }
-            else if(this.filters.category_id==0 && this.filters.brand_id!=0)
-            {
-                this.productData=this.productData_Total.filter(item=>item.brand_id==this.filters.brand_id);
-            }else
-            {
-                this.productData=this.productData_Total.filter(item=>item.category_id==this.filters.category_id && item.brand_id==this.filters.brand_id);
-            }
-            
+            this.FILTER_PRODUCT({
+                'category_id':this.filters.category_id,
+                'brand_id':this.filters.brand_id
+                }); 
         },
         prev()
         {
@@ -407,7 +360,7 @@ export default {
         findCategory(category_id)
         {
             let category_name='';
-            this.categories.forEach(category =>{
+            this.categorys.forEach(category =>{ 
                 if(category.id===category_id)
                 {
                     category_name = category.name;

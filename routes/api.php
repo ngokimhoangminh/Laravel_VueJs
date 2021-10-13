@@ -47,12 +47,9 @@ Route::group(['middleware' => 'api'], function () {
         Route::resource('categoryBlog','CategoryBlogController');
     });
     Route::group(['prefix' => 'product'], function () {
-        Route::get('get-categires','ProductController@categories')->name('product.get-categires.list');
-        Route::get('get-brands','ProductController@brands')->name('product.get-brands.list');
         Route::resource('products','ProductController');
         Route::post('unactive','ProductController@unactive')->name('product.unactive');
         Route::post('active','ProductController@active')->name('product.active');
-        Route::post('filter','ProductController@filter')->name('product.filter');
     }); 
      
     Route::group(['prefix' => 'user'], function () {

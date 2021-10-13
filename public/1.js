@@ -203,7 +203,7 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
               case 0:
                 Object(_helpers_apiRequest__WEBPACK_IMPORTED_MODULE_3__["apiRequest"])('/api/brand/brands' + Object(_helpers_buildUrl__WEBPACK_IMPORTED_MODULE_4__["buildUrl"])(_this.params)).then(function (res) {
                   var m = res;
-                  _this.brands = res.data;
+                  _this.brands = res.data.data;
                   _this.numberWithDots = Object(_helpers_pagination__WEBPACK_IMPORTED_MODULE_2__["pagination"])(m.current_page, m.last_page);
                 })["catch"](function (err) {
                   console.log(err);

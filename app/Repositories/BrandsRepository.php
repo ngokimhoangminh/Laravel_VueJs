@@ -18,6 +18,11 @@ class BrandsRepository
         return $this->brands::orderBy('id','desc')->paginate($per_page);
     }
 
+    public function getAll()
+    { 
+        return $this->brands::orderBy('id','desc')->get();
+    }
+
     public function create()
     {
         //

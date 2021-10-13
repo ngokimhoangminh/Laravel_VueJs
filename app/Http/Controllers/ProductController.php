@@ -12,16 +12,6 @@ use Illuminate\Support\Facades\File;
 class ProductController extends Controller
 {
 
-    public function categories()
-    {
-        $categories=Category::all();
-        return response()->json($categories,200);
-    }
-    public function brands()
-    {
-        $brands=Brands::all();
-        return response()->json($brands,200);
-    }
     /**
      * Display a listing of the resource.
      *
@@ -61,12 +51,21 @@ class ProductController extends Controller
     public function store(Request $request)
     {
         //
+        
         $request->validate([
-            'name'=>'required|min:3',
+            'name'=>'required|unique:products|min:3',
+            'category_id'=>'required',
+            'brand_id'=>'required',
             'product_status'=>'required',
             'product_des'=>'required',
             'image'=> 'required|image|mimes:jpeg,png,jpg'
+        ],[
+            'name.required' => 'Yêu cầu nhập tên sản phẩm',
+            'name.unique' => 'Sản phẩm đã có ,xin nhập tên sản phẩm khác',
+            'category_id.required' => 'Bạn chưa chọn danh mục cho sản phẩm',
+            'brand_id.unique' => 'Bạn chưa chọn thương hiệu cho sản phẩm',
         ]);
+        //dd($request->category_id);
         $product= new Product();
         $product->category_id=$request->category_id;
         $product->brand_id=$request->brand_id;
@@ -77,9 +76,13 @@ class ProductController extends Controller
         $product->product_status=$request->product_status;
 
         $image=$request->image;
-        $name=time().'_'.$image->getClientOriginalName();
-        Storage::disk('public')->put($name,File::get($image));
-        $product->image=$name;
+
+        $get_name_image = $image->getClientOriginalName();
+        $name_image = current(explode('.',$get_name_image));
+        $new_image =  $name_image.rand(0,99).'.'.$image->getClientOriginalExtension();
+
+        Storage::disk('public')->put($new_image,File::get($image));
+        $product->image=$new_image;
         
         if($product->save())
         {
@@ -115,6 +118,7 @@ class ProductController extends Controller
         //
         return response()
             ->json([
+                'message'=>'Get data succesfully !!!',
                 'form' => $product
             ]);
 
@@ -128,13 +132,18 @@ class ProductController extends Controller
      * @param  \App\Product  $product
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Product $product)
+    public function update(Request $request,Product $product)
     {
         //
         $request->validate([
             'name'=>'required|min:3',
+            'category_id'=>'required',
+            'brand_id'=>'required',
+            'product_status'=>'required',
+            'product_des'=>'required',
             'image'=> 'image|mimes:jpeg,png,jpg'
         ]);
+        //d($request->category_id);
         $product->category_id=$request->category_id;
         $product->brand_id=$request->brand_id;
         $product->name=$request->name;
@@ -147,16 +156,17 @@ class ProductController extends Controller
         if($request->image)
         {
             $image=$request->image;
-            $name=time().'_'.$image->getClientOriginalName();
-            Storage::disk('public')->put($name,File::get($image));
-            $product->image=$name;
+            $get_name_image = $image->getClientOriginalName();
+            $name_image = current(explode('.',$get_name_image));
+            $new_image =  $name_image.rand(0,99).'.'.$image->getClientOriginalExtension();
+            Storage::disk('public')->put($new_image,File::get($image));
+            $product->image=$new_image;
             Storage::disk('public')->delete($oldPath);
         }
         if($product->save())
         {
             return response()->json($product,200);
         }else{
-            Storage::disk('public')->delete($name);
             return response()->json([
                 'message'=>'Some error occured, plese try again',
                 'status_code'=>500
@@ -177,7 +187,7 @@ class ProductController extends Controller
         {
             Storage::disk('public')->delete($product->image);
             return response()-> json([
-                'message'=>'Product deleted succesfully !!!',
+                'message'=>'Xóa sản phẩm thánh công !!!',
                 'status_code'=>200
             ],200);
            
@@ -191,14 +201,14 @@ class ProductController extends Controller
     }
     public function unactive(Request $request)
     {
+        
         $id_product=$request->product_id;
         $product=Product::find($id_product);
-        
         $product->product_status=0;
         if($product->save())
         {
             return response()-> json([
-                'message'=>'Product change unactive succesfully !!!',
+                'message'=>'Đã chuyển sang trạng thái ẩn thành công!!!!',
                 'status_code'=>200
             ],200);
         }else
@@ -218,7 +228,7 @@ class ProductController extends Controller
         if($product->save())
         {
             return response()-> json([
-                'message'=>'Product change unactive succesfully !!!',
+                'message'=>'Đã chuyển sản phẩm sang trạng thái hiển thị thành công! !!!',
                 'status_code'=>200
             ],200);
         }else
@@ -228,11 +238,5 @@ class ProductController extends Controller
                 'status_code'=>500
             ],500);
         }
-    }
-    public function filter(Request $request)
-    {
-        $id_category=$request->category_id;
-        $product=Product::where('category_id',$id_category)->get();
-        return response()->json($product,200);
     }
 }

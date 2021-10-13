@@ -120,6 +120,7 @@ import {pagination} from "../../helpers/pagination";
 import {apiRequest} from "../../helpers/apiRequest"
 import {buildUrl} from "../../helpers/buildUrl";
 import Dialog from './Dialog';
+
 export default {
     components:{
         Dialog
