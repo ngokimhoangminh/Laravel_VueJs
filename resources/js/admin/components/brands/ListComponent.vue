@@ -186,7 +186,7 @@ export default {
                 apiRequest('/api/brand/brands' + buildUrl(this.params))
                     .then(res => {
                         let m=res;
-                        this.brands=res.data;
+                        this.brands=res.data.data;
                         this.numberWithDots=pagination(m.current_page,m.last_page);
                     })
                     .catch(err => {

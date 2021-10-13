@@ -1,17 +1,10 @@
 import {http,httpFile} from './http_service';
+
  export function createProduct(data)
  {
      return httpFile().post('/product/products',data);
  }
 
- export function loadeCategories()
- {
-     return http().get('/product/get-categires');
- }
- export function loadBrands()
- {
-     return http().get('/product/get-brands');
- }
  export function loadeProduct()
  {
      return http().get('/product/products');

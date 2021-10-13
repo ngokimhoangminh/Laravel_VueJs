@@ -20,7 +20,12 @@ class BrandsService
     {
         //
         $brands=$this->brandsRepository->index();
-        return response()->json($brands,200);
+        $brands_data=$this->brandsRepository->getAll();
+        return response()
+        ->json([
+            'data' => $brands,
+            'data_total'=>$brands_data
+        ]);
     }
 
     /**
