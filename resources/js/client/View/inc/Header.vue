@@ -9,14 +9,14 @@
                         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar-menu" aria-controls="navbars-rs-food" aria-expanded="false" aria-label="Toggle navigation">
                         <i class="fa fa-bars"></i>
                     </button>
-                        <a class="navbar-brand" href="index.html"><img src="assets/client/images/logo.png" class="logo" alt=""></a>
+                        <router-link :to="{name:'home'}" class="navbar-brand"><img src="assets/client/images/logo.png" class="logo" alt=""></router-link>
                     </div>
                     <!-- End Header Navigation -->
 
                     <!-- Collect the nav links, forms, and other content for toggling -->
                     <div class="collapse navbar-collapse" id="navbar-menu">
                         <ul class="nav navbar-nav ml-auto" data-in="fadeInDown" data-out="fadeOutUp">
-                            <li class="nav-item active"><a class="nav-link" href="index.html">Trang Chủ</a></li>
+                            <li class="nav-item active"><router-link :to="{name:'home'}" class="nav-link">Trang chủ</router-link></li>
                             <li class="nav-item"><a class="nav-link" href="about.html">Về Chúng Tôi</a></li>
                             <li class="dropdown megamenu-fw">
                                 <a href="#" class="nav-link dropdown-toggle arrow" data-toggle="dropdown">Sản Phẩm</a>

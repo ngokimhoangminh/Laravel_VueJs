@@ -93,7 +93,7 @@
 </template>
 
 <script>
-import * as user from '../../../services/user_service';
+import * as user from '../../services/user_service';
 export default {
     data()
     {

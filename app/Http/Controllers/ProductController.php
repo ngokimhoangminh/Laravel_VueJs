@@ -20,9 +20,8 @@ class ProductController extends Controller
     public function index()
     {
         //
-        $per_page=5;
+        $per_page=8;
         $products=Product::with('category','brands')->orderBy('id','desc')->paginate($per_page);
-        //$products=Product::orderBy('id','desc')->paginate($per_page);
         $product_total=Product::orderBy('id','desc')->get();
         return response()
         ->json([

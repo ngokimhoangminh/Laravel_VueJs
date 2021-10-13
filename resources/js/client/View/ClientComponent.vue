@@ -26,6 +26,7 @@
     import Slider from "./inc/Slider";
     import Instagram from "./inc/Instagram";
     import Footer from "./inc/Footer";
+    
     export default {
         mounted() {
             console.log('Component mounted.')
