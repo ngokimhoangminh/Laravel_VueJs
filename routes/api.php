@@ -36,8 +36,7 @@ Route::group(['middleware' => 'api'], function () {
     });
 
     Route::resource('customers','CustomerController');
-    
-    
+
     Route::group(['prefix' => 'brand'], function () {
         Route::resource('brands','BrandsController');
         Route::post('unactive','BrandsController@unactive')->name('brand.unactive');
@@ -52,10 +51,15 @@ Route::group(['middleware' => 'api'], function () {
         Route::post('active','ProductController@active')->name('product.active');
     }); 
      
+    Route::group(['prefix' => 'home'], function () {
+        Route::get('products','HomeController@getProducts');
+    });
+
     Route::group(['prefix' => 'user'], function () {
         Route::post('signup','UserController@signup');
         Route::post('login','UserController@login');
     });  
+
 });
 
 
