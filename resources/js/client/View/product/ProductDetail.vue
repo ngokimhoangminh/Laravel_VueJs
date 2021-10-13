@@ -179,7 +179,7 @@
 </template>
 
 <script>
-import * as productService from '../../../services/product_service';
+import * as productService from '../../services/product_service';
 export default {
     data()
     {
@@ -189,14 +189,14 @@ export default {
     },
     mounted()
     {
-        this.detail_Product();
+        this.detailProduct();
     },
     created()
     {
 
     },
     methods:{
-        detail_Product: async function()
+        async detailProduct()
         {
             try{
                 const response=await productService.ProductDetail(this.$route.params.id);
@@ -204,9 +204,9 @@ export default {
             }catch(error)
             {
                  this.flashMessage.error({
-                        message: 'Some error occurred, Please refresh!',
-                        time:4000
-                        });
+                    message: 'Some error occurred, Please refresh!',
+                    time:4000
+                });
             }
         },
         formatPrice(value) {

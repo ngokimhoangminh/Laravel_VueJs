@@ -2,7 +2,7 @@
 require('./bootstrap');
 
 window.Vue = require('vue');
-import ClientComponent from './components/ClientComponent';
+import ClientComponent from './View/ClientComponent';
 
 import Vue from 'vue';
 import router from './router/routes';
