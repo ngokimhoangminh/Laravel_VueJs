@@ -209,7 +209,7 @@ export default {
         ...mapGetters(["categorys","brands","product"])
     },
     methods:{
-        ...mapActions(["getCategory","getBrand","getProduct","deleteProduct","unActiveProduct","activeProduct"]),
+        ...mapActions(["getCategory","getBrand","getProduct","deleteProduct"]),
         ...mapMutations(['FILTER_PRODUCT']),
         async loadProduct()
         {
@@ -290,7 +290,7 @@ export default {
                 let formData=new FormData();
                 formData.append('product_id',id);
                 const response = await productService.unactive(formData);
-                this.unActiveProduct(id);
+                this.$store.dispatch('unActiveProduct',id);
                 this.flashMessage.success({
                     message: response.data.message,
                     time:4000
@@ -308,7 +308,7 @@ export default {
                 let formData=new FormData();
                 formData.append('product_id',id);
                 const response=await productService.active(formData);
-                this.activeProduct(id);
+                this.$store.dispatch('activeProduct',id);
                 this.flashMessage.success({
                     message: response.data.message,
                     time:4000

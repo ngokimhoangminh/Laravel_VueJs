@@ -27,7 +27,7 @@
                         <div class="col-lg-9 col-md-9 offset-md-3 form-group pl-0 pr-0">
                             <button type="submit" class="btn btn-submit d-flex align-items-center justify-content-center" style="width: 100%;background: #D33B33;color:#fff;border: none;height: 45px;border-radius: 45px;font-weight: 600;"  href="#">Đăng Nhập</button>
                             <div class="d-flex justify-content-between">
-                                <a href="#">Đăng ký tài khoản </a>
+                                <router-link :to="{name:'sign-up'}">Đăng ký tài khoản</router-link>
                                 <a href="#">Bạn quên mật khẩu ?</a>
                             </div>
                             
@@ -64,27 +64,33 @@ export default {
     methods:{
         login:async function()
         {
-            console.log("aaa");
              try {
                 const response=await user.login(this.user);
-                console.log(response);
-                localStorage.setItem('client-name',response.user.fullname);
+                this.$message.success(
+                    'Đăng nhập thành công',
+                    1,
+                );
+                setTimeout(() => {
+                    this.$router.push({ name:'home'});
+                }, 2000); 
                 this.error={};
-                this.$router.push('/');
             } catch (error) {
                 switch(error.response.status)
                     {
+                        case 422:
+                            this.errors=error.response.data.errors;
+                            break;
                         case 500:
-                            this.flashMessage.error({
-                            message: error.response.data.message,
-                            time:4000
-                            });
+                            this.$message.error(
+                                response.data.message,
+                                1,
+                            );
                             break;
                         default:
-                            this.flashMessage.error({
-                            message: 'Some error occurred, Please try agian!',
-                            time:4000
-                            });
+                            this.$message.error(
+                                'Some error occurred, Please try agian!',
+                                1,
+                            );
                             break;
                     }
             }

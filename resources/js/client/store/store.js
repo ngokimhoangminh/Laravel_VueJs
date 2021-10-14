@@ -1,11 +1,11 @@
 import Vue from 'vue';
 import Vuex from 'vuex';
 import home from './modules/home';
+import user from './modules/user';
 Vue.use(Vuex);
 
 export default new Vuex.Store({
     state:{
-        isLoggedIn:null,
         apiURL:'http://127.0.0.1:8000/api',
         serverPath:'http://127.0.0.1:8000/',
         profile:{}
@@ -15,6 +15,7 @@ export default new Vuex.Store({
     actions:{
     },
     modules: {
-        home
+        home,
+        user
     }
  });

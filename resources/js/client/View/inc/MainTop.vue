@@ -37,10 +37,7 @@
                     </div>
                     <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
                         <div class="custom-select-box">
-                            <select id="basic" class="selectpicker show-tick form-control" data-placeholder="$ USD">
-                            <option>¥ JPY</option>
-                            <option>$ USD</option>
-                            <option>€ EUR</option>
+                             <button class="dropdown-item" @click="logout" v-if="name!=''">Đăng xuất</button>
                         </select>
                         </div>
                         <div class="right-phone-box">
@@ -49,7 +46,7 @@
                         <div class="our-link">
                             <ul>
                                 <li>
-                                    <router-link class="small" :to="{name:'sign-up'}" v-if="this.name==''">Đăng ký</router-link>
+                                    <router-link class="small" :to="{name:'user-login'}" v-if="name==''">Đăng Nhập</router-link>
                                     <a href="#" v-else>{{name}}</a>
                                 </li>
                                 <li><a href="#">Địa điểm</a></li>
@@ -64,24 +61,46 @@
 </template>
 
 <script>
+import * as user from '../../services/user_service';
+import { mapActions, mapGetters } from "vuex";
+
 export default {
 data()
     {
         return {
-            
-            name:''
+            fullname:''
         }
     },
     created()
     {
-      this.name=localStorage.getItem('client-name');
-      console.log(localStorage.getItem('user-name'));
+      this.checkUser();
+    },
+    computed: {
+        ...mapGetters(["name"])
     },
     methods:{
+        checkUser(){
+            let user = JSON.parse(sessionStorage.getItem("user_info"));
+            this.fullname=user['fullname'];
+        },
+        logout()
+        {
+            user.logout();
+            this.$router.push({ name:'user-login'});
+        }
     }
 }
 </script>
 
 <style>
-
+    .dropdown-item{
+        background: #D33B33;
+        color: #fff!important;
+        justify-content: center;
+        display: flex!important;
+    }
+    .dropdown-item:hover{
+        color:#000!important;
+        cursor: pointer;
+    }
 </style>

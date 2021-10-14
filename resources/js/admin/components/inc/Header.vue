@@ -73,6 +73,7 @@
 </template>
 <script>
 import * as auth from '../../services/auth_service';
+
 export default {
     name:'Header',
     data()

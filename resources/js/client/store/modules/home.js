@@ -30,7 +30,6 @@ const homeModules={
     },
     mutations:{
         GET_PRODUCT(state,products){
-            console.log("ppp",products);
             state.products=products.data.data;
         },
         SET_CATEGORYS(state,categotys){
