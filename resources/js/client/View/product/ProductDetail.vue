@@ -39,25 +39,10 @@
                                 <h4>Mô tả ngắn:</h4>
                                 <p v-html="products.product_des"></p>
                                 <ul>
-                                    <li>
-                                        <div class="form-group size-st">
-                                            <label class="size-label">Size</label>
-                                            <select id="basic" class="selectpicker show-tick form-control">
-                                                <option value="0">Size</option>
-                                                <option value="0">S</option>
-                                                <option value="1">M</option>
-                                                <option value="1">L</option>
-                                                <option value="1">XL</option>
-                                                <option value="1">XXL</option>
-                                                <option value="1">3XL</option>
-                                                <option value="1">4XL</option>
-								            </select>
-                                        </div>
-                                    </li>
-                                    <li>
+                                    <li class="w-100">
                                         <div class="form-group quantity-box">
                                             <label class="control-label">Số lượng</label>
-                                            <input class="form-control" value="0" min="0" max="20" type="number">
+                                            <input class="form-control" v-model="cartData.quantity" value="1" min="1" max="20" type="number">
                                         </div>
                                     </li>
                                 </ul>
@@ -65,7 +50,7 @@
                                 <div class="price-box-bar">
                                     <div class="cart-and-bay-btn">
                                         <a class="btn hvr-hover" data-fancybox-close="" href="#">Mua ngay</a>
-                                        <a class="btn hvr-hover" data-fancybox-close="" href="#">Thêm giỏ hàng</a>
+                                        <a class="btn hvr-hover" data-fancybox-close="" @click="addToCart()">Thêm giỏ hàng</a>
                                     </div>
                                 </div>
 
@@ -141,7 +126,7 @@
                                             <li><a href="#" data-toggle="tooltip" data-placement="right" title="Compare"><i class="fas fa-sync-alt"></i></a></li>
                                             <li><a href="#" data-toggle="tooltip" data-placement="right" title="Add to Wishlist"><i class="far fa-heart"></i></a></li>
                                         </ul>
-                                        <a class="cart" href="#">Add to Cart</a>
+                                        <a class="cart" @click="$router.push({name:'cart'})">Add to Cart</a>
                                     </div>
                                 </div>
                                 <div class="why-text">
@@ -180,11 +165,22 @@
 
 <script>
 import * as homeService from '../../services/home_service';
+import * as cartService from '../../services/cart_service';
+
 export default {
     data()
     {
         return{
-            products:{}
+            products:{},
+            cartData:{
+                user_id:'',
+                product_id:this.$route.params.id,
+                product_name:this.$route.params.name,
+                product_price:this.$route.params.discount,
+                product_image:this.$route.params.image,
+                quantity:''
+            },
+            errors:{}
         }
     },
     mounted()
@@ -193,7 +189,7 @@ export default {
     },
     created()
     {
-
+        
     },
     methods:{
         async detailProduct()
@@ -212,8 +208,41 @@ export default {
         formatPrice(value) {
             let val = (value/1).toFixed(0).replace('.', ',')
             return val.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".")
+        },
+        async addToCart()
+        {
+            let user = JSON.parse(sessionStorage.getItem("user_info"));
+            console.log("useee",user);
+            if(user)
+            {
+                this.cartData.user_id=user.id;
+                let cart=this.cartData;
+                try{
+                    const response =await cartService.createCart(cart);
+                    this.$store.dispatch('createCart',cart);
+                    this.$router.push({ name:'cart'});
+                    }catch(error)
+                    {
+                        switch(error.response.status)
+                        {
+                            case 422:
+                                this.errors=error.response.data.errors;
+                            default:
+                                this.flashMessage.error({
+                                    message: 'Some error occurred, Please try agian!',
+                                    time:4000
+                                });
+                                break;
+                        }
+                    }
+                console.log("cart",cart);
+            }else{
+                this.$router.push({ name:'user-login'});
+            }
+            
         }
-    }
+    },
+    
 }
 </script>
 

@@ -13,4 +13,9 @@ class UserModel extends Model
     //có thể insert vào
     protected $primaryKey = 'id';
  	protected $table = 'user';
+
+    public function product()
+ 	{
+        return $this->belongsToMany('App\Product','App\Cart','user_id','product_id');
+ 	}
 }

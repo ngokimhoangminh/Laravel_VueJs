@@ -60,6 +60,9 @@ Route::group(['middleware' => 'api'], function () {
         Route::post('login','UserController@login');
     });  
 
+    Route::group(['prefix' => 'cart'], function () {
+        Route::resource('carts','CartController');
+    });  
 });
 
 

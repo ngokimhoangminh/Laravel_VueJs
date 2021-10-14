@@ -56,7 +56,7 @@
                             <li class="dropdown">
                                 <a href="#" class="nav-link dropdown-toggle arrow" data-toggle="dropdown">Của Hàng</a>
                                 <ul class="dropdown-menu">
-                                    <li><a href="cart.html">Giỏ Hàng</a></li>
+                                    <li><a @click="$router.push({name:'cart'})">Giỏ Hàng</a></li>
                                     <li><a href="checkout.html">Thanh Toán</a></li>
                                     <li><a href="my-account.html">Tài Khoản</a></li>
                                     <li><a href="wishlist.html">Yêu Thích</a></li>

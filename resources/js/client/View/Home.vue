@@ -45,7 +45,7 @@
                                 <img :src="'assets/admin/uploads/'+product.image" class="img-fluid" alt="Image">
                                 <div class="mask-icon">
                                     <ul>
-                                        <li><a @click="$router.push({name:'product-detail',params:{id:product.id}})" data-toggle="tooltip" data-placement="right" title="View"><i class="fas fa-eye"></i></a></li>
+                                        <li><a @click="$router.push({name:'product-detail',params:{id:product.id,name:product.name,discount:product.discount,image:product.image}})" data-toggle="tooltip" data-placement="right" title="View"><i class="fas fa-eye"></i></a></li>
                                         <li><a href="#" data-toggle="tooltip" data-placement="right" title="Compare"><i class="fas fa-sync-alt"></i></a></li>
                                         <li><a href="#" data-toggle="tooltip" data-placement="right" title="Add to Wishlist"><i class="far fa-heart"></i></a></li>
                                     </ul>

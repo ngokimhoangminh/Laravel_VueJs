@@ -10,9 +10,19 @@ const routes=[
         component:()=>import('../View/Home.vue')
     },
     {
-        path:'/product-detail/:id',
+        path:'/product-detail/:params',
         name:'product-detail',
         component:()=>import('../View/product/ProductDetail.vue')
+    },
+    {
+        path:'/cart',
+        name:'cart',
+        component:()=>import('../View/cart/Cart.vue')
+    },
+    {
+        path:'/checkout',
+        name:'checkout',
+        component:()=>import('../View/cart/Cart.vue')
     },
     {
         path:'/sign-up',
