@@ -20,8 +20,8 @@
                         <div align="center" class="signin__info signin__info--userlname pb-2 d-flex align-self-baseline bg-module-middle wow animate__fadeInUp " data-wow-duration="2s">
                             <label class="col-md-3 moudle__info--title text-left d-flex p-0">Tên Đăng Nhập&nbsp;<p class="text-danger">(*)</p></label>
                             <input type="text" 
-                                class="form-control required display-inline-block" v-model="user.name" placeholder="Nhập tên đăng nhập">
-                            <div class="invalid-feedback" style="display:block" v-if="errors.name">{{errors.name[0]}}</div>
+                                class="form-control required display-inline-block" v-model="user.username" placeholder="Nhập tên đăng nhập">
+                            <div class="invalid-feedback" style="display:block" v-if="errors.username">{{errors.username[0]}}</div>
                         </div>
                         <div align="center" class="signin__info signin__info--email pb-2 d-flex align-self-baseline bg-module-middle wow animate__fadeInUp" data-wow-duration="2s">
                             <label class="col-md-3 moudle__info--title text-left p-0">Email</label>
@@ -62,8 +62,8 @@
                         <div align="center" class="signin__info signin__info--date pb-2 d-flex align-self-baseline bg-module-middle wow animate__fadeInUp" data-wow-duration="2s">
                             <label class="col-md-3 moudle__info--title text-left d-flex p-0">Giới Tính&nbsp;<p class="text-danger">(*)</p></label>
                             <el-radio-group v-model="user.gender" size="medium">
-                                <el-radio border value="0" label="Nam"></el-radio>
-                                <el-radio border value="1" label="Nữ"></el-radio>
+                                <el-radio border value="0" label="0">Nam</el-radio>
+                                <el-radio border value="1" label="1">Nữ</el-radio>
                             </el-radio-group>
                         </div>
                         <div class="invalid-feedback" style="display:block" v-if="errors.gender">{{errors.gender[0]}}</div>
@@ -101,9 +101,10 @@ export default {
             errors:{},
             user:{
                 fullname:'',
-                name:'',
+                username:'',
                 email:'',
                 password:'',
+                phone:'',
                 gender:'',
                 birthday:''
             },
@@ -131,7 +132,8 @@ export default {
                         2,
                     );
                     setTimeout(() => {
-                         this.$router.push('/user-login');
+                         this.$router.push({ name:'user-login'});
+                         window.location.reload();
                     }, 2000); 
                     this.error={};
             }catch(error)

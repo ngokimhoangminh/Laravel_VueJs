@@ -20,7 +20,8 @@ class CreateUser extends Migration
             $table->string('email');
             $table->string('password');
             $table->integer('gender');
-            $table->date('birthday');
+            $table->integer('phone');
+            $table->string('birthday');
             $table->timestamps();
         });
     }

@@ -45,7 +45,7 @@
                                 <img :src="'assets/admin/uploads/'+product.image" class="img-fluid" alt="Image">
                                 <div class="mask-icon">
                                     <ul>
-                                        <li><a @click="$router.push('/product-detail/'+ product.id)" data-toggle="tooltip" data-placement="right" title="View"><i class="fas fa-eye"></i></a></li>
+                                        <li><a @click="$router.push({name:'product-detail',params:{id:product.id}})" data-toggle="tooltip" data-placement="right" title="View"><i class="fas fa-eye"></i></a></li>
                                         <li><a href="#" data-toggle="tooltip" data-placement="right" title="Compare"><i class="fas fa-sync-alt"></i></a></li>
                                         <li><a href="#" data-toggle="tooltip" data-placement="right" title="Add to Wishlist"><i class="far fa-heart"></i></a></li>
                                     </ul>
@@ -82,14 +82,13 @@ export default {
     },
     mounted()
     {
-        this.getCategory();
-        this.getProduct();
+        this.$store.dispatch('getProduct');
+        this.$store.dispatch('getCategory');
     },
     computed: {
         ...mapGetters(["categorys","products"])
     },
     methods:{
-        ...mapActions(["getCategory","getProduct"]),
         formatPrice(value) {
             let val = (value/1).toFixed(0).replace('.', ',')
             return val.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".")
