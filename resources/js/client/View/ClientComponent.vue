@@ -20,6 +20,7 @@
 </template>
 
 <script>
+    import * as user from '../services/user_service';
     import Header from "./inc/Header";
     import MainTop from "./inc/MainTop";
     import Search from "./inc/Search";
@@ -38,6 +39,20 @@
             Search,
             Instagram,
             Footer
+        },
+        beforeCreate:async function()
+        {
+          try{
+            if(user.isLogin())
+            {
+                const users=JSON.parse(sessionStorage.getItem("user_info"));
+                this.$store.dispatch('getInfo',users);
+            }
+          }catch(error)
+          {
+            user.logout();
+          }
         }
     }
+
 </script>

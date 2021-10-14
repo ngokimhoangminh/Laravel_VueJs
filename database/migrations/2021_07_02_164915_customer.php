@@ -13,7 +13,7 @@ class Customer extends Migration
      */
     public function up()
     {
-        Schema::create('=customer', function (Blueprint $table) {
+        Schema::create('customer', function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->string('name_customer');
             $table->string('phone_customer');

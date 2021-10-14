@@ -87,6 +87,7 @@ data()
         {
             user.logout();
             this.$router.push({ name:'user-login'});
+            //window.location.reload();
         }
     }
 }

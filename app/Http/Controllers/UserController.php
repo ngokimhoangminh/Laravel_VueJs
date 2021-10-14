@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\UserModel;
 use Illuminate\Support\Facades\Hash;
+
 class UserController extends Controller
 {
     public function registerRequest()
@@ -75,13 +76,4 @@ class UserController extends Controller
             ],200);
         }   
     }
-    // public function logout(Request $request)
-    // {
-    //     $request->user()->token()->revoke();
-    //     //$request->user()->currentAccessToken()->delete();
-    //     return response()->json([
-    //         'message'=>'Logout succesfully!!',
-    //         'status_code'=>200
-    //     ],200);
-    // }
 }

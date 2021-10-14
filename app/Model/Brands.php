@@ -17,7 +17,4 @@ class Brands extends Model
     public function product(){
         return $this->hasMany('App\Product','brand_id','id');
     }
-    public function nhieudanhmuc(){
-        return $this->belongsToMany('App\Model\Category','App\Product','brand_id','category_id');
-    }
 }

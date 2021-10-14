@@ -1,7 +1,7 @@
 <?php
 
 namespace App;
-
+use App\UserModel;
 use Illuminate\Database\Eloquent\Model;
 
 class Product extends Model
@@ -20,4 +20,9 @@ class Product extends Model
     public function category(){
         return $this->belongsTo('App\Model\Category','category_id','id');
     }
+
+    public function customer()
+ 	{
+        return $this->belongsToMany('App\UserModel','App\Cart','product_id','user_id');
+ 	}
 }
