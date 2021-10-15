@@ -86,8 +86,7 @@ data()
         logout()
         {
             user.logout();
-            this.$router.push({ name:'user-login'});
-            //window.location.reload();
+            this.$router.replace({ name:'user-login'});
         }
     }
 }

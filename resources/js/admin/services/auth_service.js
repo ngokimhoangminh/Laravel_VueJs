@@ -20,24 +20,24 @@ import store from '../store/store';
  function setToken(user)
  {
     const token = jwt.sign({ user: user }, 'laravelvuengokimhoangminh');
-    localStorage.setItem('laravel-vue-spa-token',JSON.stringify(token));
-    localStorage.setItem('laravel-user',user);
+    sessionStorage.setItem('laravel-vue-spa-token',JSON.stringify(token));
+    sessionStorage.setItem('laravel-user',JSON.stringify(user));
     store.dispatch('authenticate',user.user);
  }
  export function isLoggedIn()
  {
-     const token=localStorage.getItem('laravel-vue-spa-token');
+     const token=sessionStorage.getItem('laravel-vue-spa-token');
      return token!=null;
  }
  export function logout()
  {
     http().get('/auth/logout');
-    localStorage.removeItem('laravel-vue-spa-token');
-    localStorage.removeItem('user-role');
+    sessionStorage.removeItem('laravel-vue-spa-token');
+    sessionStorage.removeItem('user-role');
  }
  export function getAccessToken()
  {
-    const token=localStorage.getItem('laravel-vue-spa-token');
+    const token=sessionStorage.getItem('laravel-vue-spa-token');
     if(!token)
     {
         return null;
@@ -47,7 +47,7 @@ import store from '../store/store';
  }
  export function getUserRole()
  {
-    const user=localStorage.getItem('user-role');
+    const user=sessionStorage.getItem('user-role');
     // if(!user)
     // {
     //     return null;

@@ -71,11 +71,11 @@ class BrandsService
     public function update($request, $brand)
     {
         //
-        $brand=$this->brandsRepository->update($request->validated(),$brand);
-        if($brand)
-        {
+        try {
+            $this->brandsRepository->update($request->validated(),$brand);
             return response()->json($brand,200);
-        }else{
+        } catch (\Throwable $th) {
+            \Log::error($th);
             return response()->json([
                 'message'=>'Some error occured, plese try again',
                 'status_code'=>500
@@ -91,31 +91,30 @@ class BrandsService
      */
     public function destroy($brand)
     {
-        $product=$this->productRepository->findByBrandID($brand);
-        if(!empty($product))
-        {
-            foreach($product as $products)
+        try {
+            $product=$this->productRepository->findByBrandID($brand);
+            if(!empty($product))
             {
-                $this->productRepository->delete($products);
-                Storage::disk('public')->delete($products->image);
+                foreach($product as $products)
+                {
+                    $this->productRepository->delete($products);
+                    Storage::disk('public')->delete($products->image);
+                }
             }
-        }
-        $result=$this->brandsRepository->destroy($brand);
-        if($result)
-        {
+            $this->brandsRepository->destroy($brand);
             return response()-> json([
                 'message'=>'Đã xóa thương hiệu thành công !!!',
                 'status_code'=>200
             ],200);
-           
-        }else
-        {
+        } catch (\Throwable $th) {
+            \Log::error($th);
             return response()-> json([
                 'message'=>'Some error occured, pleses try again!!!',
                 'status_code'=>500
             ],500);
         }
     }
+
     public function unactive(Request $request)
     {
         $brand=$this->brandsRepository->unactive($request->brand_id);

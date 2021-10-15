@@ -27,5 +27,7 @@ import store from '../store/store';
  export function logout()
  {
     sessionStorage.removeItem('user_info');
+    localStorage.removeItem('checkProducts');
+    localStorage.removeItem('carts');
     store.dispatch('getInfo',"");
  }

@@ -1,4 +1,3 @@
-import axios from 'axios';
 import {http,httpFile} from '../../services/http_service';
 import * as user from '../../services/user_service';
 

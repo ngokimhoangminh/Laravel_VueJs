@@ -8,22 +8,22 @@
 <script>
 import * as auth from '../services/auth_service';
 export default {
-    name: 'RootComponent'
-    // beforeCreate:async function()
-    // {
-    //   try{
-    //     if(auth.isLoggedIn())
-    //     {
-    //       const response= await auth.getProfile();
-    //       console.log(response);
-    //       this.$store.dispatch('authenticate',user.user);
-    //     }
-    //   }catch(error)
-    //   {
-    //     auth.logout();
-    //   }
-    // }
-    
+    name: 'RootComponent',
+    beforeCreate:async function()
+    {
+      try{
+        if(auth.isLoggedIn())
+        {
+          //const response= await auth.getProfile();
+          
+          const user=JSON.parse(sessionStorage.getItem("laravel-user"));
+          this.$store.dispatch('authenticate',user.user);
+        }
+      }catch(error)
+      {
+        auth.logout();
+      }
+    }
 }
 </script>
 <style scoped>

@@ -71,7 +71,7 @@ export default {
                     1,
                 );
                 setTimeout(() => {
-                    this.$router.push({ name:'home'});
+                    this.$router.replace({ name:'home'});
                 }, 2000); 
                 this.error={};
             } catch (error) {
