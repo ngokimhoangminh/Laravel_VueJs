@@ -81,12 +81,12 @@
                         <h3>Tóm tắt giỏ hàng</h3>
                         <div class="d-flex">
                             <h4>Tổng Tiền</h4>
-                            <div class="ml-auto font-weight-bold" id="subTotal"> $ 130 </div>
+                            <div class="ml-auto font-weight-bold" id="subTotal"> {{formatPrice(subTotal)}} VND</div>
                         </div>
                         <hr class="my-1">
                         <div class="d-flex">
                             <h4>Thuế</h4>
-                            <div class="ml-auto font-weight-bold" id="tax"> $ 2 </div>
+                            <div class="ml-auto font-weight-bold" id="tax"> {{formatPrice(tax)}} VND </div>
                         </div>
                         <div class="d-flex">
                             <h4>Phí vận chuyển</h4>
@@ -95,11 +95,11 @@
                         <hr>
                         <div class="d-flex gr-total">
                             <h5>Tổng Cộng</h5>
-                            <div class="ml-auto h5" id="grandTotal"> $ 388 </div>
+                            <div class="ml-auto h5" id="grandTotal"> {{formatPrice(grandTotal)}} VND </div>
                         </div>
                         <hr> </div>
                 </div>
-                <div class="col-12 d-flex shopping-box"><a @click="$router.push({name:'checkout'})" class="ml-auto btn hvr-hover">Thanh Toán</a> </div>
+                <div class="col-12 d-flex shopping-box"><a @click="checkOut()" class="ml-auto btn hvr-hover">Thanh Toán</a> </div>
             </div>
 
         </div>
@@ -125,18 +125,23 @@ export default {
     },
     created()
     {
+        if(this.checkedProduct.length>0)
+        {
+            this.checkedProduct.splice(1,this.checkedProduct.length);
+        }
     },
     computed: {
-        ...mapGetters(["id","carts"])
+        ...mapGetters(["id","carts","subTotal","tax","grandTotal"])
     },
     mounted()
     {
-        this.$store.dispatch('getCart',this.id);
-        this.totalCart();
-        //this.TOTAL_CART(this.carts);
+       // this.totalCart();
+       this.getCart(this.id);
+       this.totalCart();
     },
     methods:{
-        ...mapMutations(['TOTAL_CART']),
+        ...mapActions(["getCart"]),
+        ...mapMutations(['CHECK_PRODUCT','TOTAL_CART']),
         formatPrice(value) {
             let val = (value/1).toFixed(0).replace('.', ',')
             return val.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".")
@@ -199,24 +204,23 @@ export default {
         async totalCart()
         {
             const response=await cartService.loadCart();
-            let total=0;
-            let tax=0;
-            let grandTotal=0;
-            for(let i=0;i<this.carts.length;i++)
+            this.TOTAL_CART(this.carts);
+        },
+        checkOut()
+        {
+            if(this.checkedProduct.length>0)
             {
-                total+=(parseInt(this.carts[i]['product_price'])*parseInt(this.carts[i]['quantity']));
+                console.log('checkbox',this.checkedProduct);
+                this.CHECK_PRODUCT(this.checkedProduct);
+                this.$router.push({ name:'checkout'});
+            }else{
+                this.$message.error(
+                    'Bạn chưa chọn sản phẩm muốn thanh toán',
+                    1,
+                );
             }
-            tax=total*0.1;
-            this.subTotals=total;
-            console.log("subTotals nha",this.subTotals);
-            $("#subTotal").text(this.formatPrice(parseInt(total))+" VND");
-            $("#tax").text(this.formatPrice(parseInt(tax))+" VND");
-            $("#grandTotal").text(this.formatPrice(parseInt(total)+parseInt(tax))+" VND");
+            
         }
-        // checkOut()
-        // {
-        //     console.log('checkbox',this.checkedProduct);
-        // }
     }   
 }
 </script>
