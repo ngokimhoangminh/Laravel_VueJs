@@ -22,7 +22,7 @@ const routes=[
     {
         path:'/checkout',
         name:'checkout',
-        component:()=>import('../View/cart/Cart.vue')
+        component:()=>import('../View/checkout/Checkout.vue')
     },
     {
         path:'/sign-up',
