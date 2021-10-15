@@ -136,14 +136,15 @@ export default {
 
     },
     computed: {
-        ...mapGetters(["checkProduct","checkoutData","subTotal","tax","grandTotal"])
+        ...mapGetters(["checkoutData","subTotal","tax","grandTotal"])
     },
     methods:{
         ...mapMutations(['TOTAL_CART','CHECK_PRODUCT','GET_CHECKOUT','TOTAL_CART']),
         getProduct()
         {
-            console.log("ckPro",this.checkProduct);
-            this.GET_CHECKOUT(this.checkProduct);
+            const checkProducts = JSON.parse(localStorage.getItem('checkProducts'));
+            console.log("ckPro",checkProducts);
+            this.GET_CHECKOUT(checkProducts);
             this.TOTAL_CART(this.checkoutData);
         },
         formatPrice(value) {

@@ -10,7 +10,7 @@
             </h1>
             <div class="login" width="100%" align="center" border="0" cellpadding="0"
                 cellspacing="0">
-                <form v-on:submit.prevent="sign_up">
+                <form v-on:submit.prevent="signUp">
                     <div class="signin__info">
                         <div align="center" class="signin__info signin__info--fullname pb-2 d-flex bg-module-middle wow animate__fadeInUp align-self-baseline" data-wow-duration="2s">
                             <label class="col-md-3 moudle__info--title text-left d-flex p-0">Họ Tên&nbsp;<p class="text-danger">(*)</p></label>
@@ -122,7 +122,7 @@ export default {
 
     },
     methods:{
-        sign_up: async function()
+        signUp: async function()
         {
              try{
                 
@@ -132,8 +132,7 @@ export default {
                         2,
                     );
                     setTimeout(() => {
-                         this.$router.push({ name:'user-login'});
-                         window.location.reload();
+                        this.$router.replace({ name:'user-login'});
                     }, 2000); 
                     this.error={};
             }catch(error)

@@ -103,7 +103,13 @@ class ProductController extends Controller
     public function show(Product $product)
     {
         //
-        return response()->json($product,200);
+        try {
+            return response()->json($product,200);
+        } catch (\Throwable $th) {
+            \Log::error($th);
+            return response()->json(['status'=>false,'message'=>'No product found!'],400);
+        }
+        
     }
 
     /**
@@ -115,13 +121,16 @@ class ProductController extends Controller
     public function edit(Product $product)
     {
         //
-        return response()
+        try {
+            return response()
             ->json([
                 'message'=>'Get data succesfully !!!',
                 'form' => $product
             ]);
-
-        
+        } catch (\Throwable $th) {
+            \Log::error($th);
+            return response()->json(['status'=>false,'message'=>'No product found!'],400);
+        }
     }
 
     /**

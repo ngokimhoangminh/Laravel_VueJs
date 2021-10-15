@@ -81,8 +81,8 @@ export default {
             try {
                 const response=await auth.login(this.user);
                 console.log(response.user.role);
-                localStorage.setItem('user-name',response.user.name);
-                localStorage.setItem('user-role',response.user.role);
+                sessionStorage.setItem('user-name',response.user.name);
+                sessionStorage.setItem('user-role',response.user.role);
                 this.error={};
                 this.$router.push('/home');
             } catch (error) {

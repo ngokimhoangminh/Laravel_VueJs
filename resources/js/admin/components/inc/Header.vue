@@ -85,9 +85,9 @@ export default {
     },
     created()
     {
-      this.name=localStorage.getItem('user-name');
-      console.log(localStorage.getItem('user-name'));
-      console.log(localStorage.getItem('user-role'));
+      this.name=sessionStorage.getItem('user-name');
+      console.log(sessionStorage.getItem('user-name'));
+      console.log(sessionStorage.getItem('user-role'));
     },
     methods:{
         logout:async function()

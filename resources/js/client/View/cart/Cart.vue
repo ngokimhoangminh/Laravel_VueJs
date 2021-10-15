@@ -110,6 +110,7 @@
 <script>
 import { mapActions, mapGetters,mapMutations } from "vuex";
 import * as cartService from '../../services/cart_service';
+import * as helpers from '../../helpers/setCheckProducts';
 
 export default {
     data()
@@ -123,25 +124,25 @@ export default {
             checkedProduct: []
         }
     },
+    beforeCreate()
+    {
+        
+    },
     created()
     {
-        if(this.checkedProduct.length>0)
-        {
-            this.checkedProduct.splice(1,this.checkedProduct.length);
-        }
+        console.log("idd bn",this.id);
+        this.getCart(this.id);
     },
     computed: {
         ...mapGetters(["id","carts","subTotal","tax","grandTotal"])
     },
     mounted()
     {
-       // this.totalCart();
-       this.getCart(this.id);
-       this.totalCart();
+       this.totalCart(this.carts);
     },
     methods:{
-        ...mapActions(["getCart"]),
-        ...mapMutations(['CHECK_PRODUCT','TOTAL_CART']),
+        ...mapActions(["getCart","editCart"]),
+        ...mapMutations(['CHECK_PRODUCT','TOTAL_CART','CHANGE_PRICE']),
         formatPrice(value) {
             let val = (value/1).toFixed(0).replace('.', ',')
             return val.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".")
@@ -149,21 +150,18 @@ export default {
         onChangePrice(event)
         {
             let cart_id=event.target.id;
-            let product_price=$('#product_price'+cart_id).text();
             let quantity=event.target.value;
-            $('#total'+cart_id).text(this.formatPrice(parseInt(product_price*quantity))+" VND");   
+            this.CHANGE_PRICE({'id':cart_id,'quantity':quantity});
+            this.totalCart(this.carts);  
         },
         async updateCart()
         {
-            
+            console.log("cart update",this.carts);
             for(let i=0;i<this.carts.length;i++)
             {
-                let formData=new FormData();
-                formData.append('quantity',$('#'+this.carts[i]['id']).val());
-                formData.append('_method','put');
                 try{
-                    const response =await cartService.updateCart(this.carts[i]['id'],formData);
-                    this.$router.push({ name:'cart'});
+                    this.$store.dispatch('editCart',this.carts[i]);
+                   // this.$router.replace({ name:'cart'});
                 }catch(error)
                 {
                     switch(error.response.status)
@@ -201,18 +199,18 @@ export default {
                 );
             }
         },
-        async totalCart()
+        totalCart(data)
         {
-            const response=await cartService.loadCart();
-            this.TOTAL_CART(this.carts);
+            const cart=JSON.parse(localStorage.getItem('carts'));
+            console.log("local",cart);
+            this.TOTAL_CART(data);
         },
         checkOut()
         {
             if(this.checkedProduct.length>0)
             {
-                console.log('checkbox',this.checkedProduct);
-                this.CHECK_PRODUCT(this.checkedProduct);
-                this.$router.push({ name:'checkout'});
+                helpers.checkProducts(this.checkedProduct);
+                this.$router.replace({ name:'checkout'});
             }else{
                 this.$message.error(
                     'Bạn chưa chọn sản phẩm muốn thanh toán',

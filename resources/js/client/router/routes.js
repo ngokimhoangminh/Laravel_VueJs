@@ -1,5 +1,6 @@
 import VueRouter from 'vue-router'
 import Vue from 'vue';
+import * as user from '../services/user_service';
 Vue.use(VueRouter);
 
 const routes=[
@@ -17,12 +18,32 @@ const routes=[
     {
         path:'/cart',
         name:'cart',
-        component:()=>import('../View/cart/Cart.vue')
+        component:()=>import('../View/cart/Cart.vue'),
+        beforeEnter(to, from, next)
+        {
+            if(!user.isLogin())
+            {
+                next('/user-login');
+            }else
+            {
+                next();
+            }
+        }
     },
     {
         path:'/checkout',
         name:'checkout',
-        component:()=>import('../View/checkout/Checkout.vue')
+        component:()=>import('../View/checkout/Checkout.vue'),
+        beforeEnter(to, from, next)
+        {
+            if(!user.isLogin())
+            {
+                next('/user-login');
+            }else
+            {
+                next();
+            }
+        }
     },
     {
         path:'/sign-up',

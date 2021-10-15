@@ -220,7 +220,7 @@ export default {
                 try{
                     const response =await cartService.createCart(cart);
                     this.$store.dispatch('createCart',cart);
-                    this.$router.push({ name:'cart'});
+                    this.$router.replace({ name:'cart'});
                     }catch(error)
                     {
                         switch(error.response.status)
@@ -237,7 +237,7 @@ export default {
                     }
                 console.log("cart",cart);
             }else{
-                this.$router.push({ name:'user-login'});
+                this.$router.replace({ name:'user-login'});
             }
             
         }
